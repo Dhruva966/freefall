@@ -1,0 +1,350 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		3162BEE90A9FB6EEA43717DB /* MacBackendRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = BABB5239530E2BD70E52B1C8 /* MacBackendRouter.swift */; };
+		3A6EAF788063CD3D5DDA1C59 /* FreeFallApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31E742294A570F72FC87954E /* FreeFallApp.swift */; };
+		3C4F7DFA4F18DB606A28BB76 /* ChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9BC4651AF599864049B992E /* ChatView.swift */; };
+		4C963009D6A1FD6028452B0F /* ChatMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B82EEB41E4515E62B5390966 /* ChatMessage.swift */; };
+		55544482530C25AF52852714 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B5FAB7BDB6EB13022EBA59C /* Settings.swift */; };
+		B2666B29BA34E3D4F6C133F6 /* ActionExecutor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E60667E61F9A8E53ABA36DC /* ActionExecutor.swift */; };
+		CDE0081A365AC176B7655707 /* MessageRouting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EFCDD1BB4861EB6D6BB6D18 /* MessageRouting.swift */; };
+		D2425EE6F8DA2035D06CF1AE /* TypingIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F250C9E47EF01EFAB9D90EC /* TypingIndicator.swift */; };
+		EB2CCF7258A2A65C454D86CF /* MessageBubble.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30DAC9EEF4A6E0FB9BAB06C4 /* MessageBubble.swift */; };
+		ED6745D698F995E25B9A9444 /* IntentResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E9C236147D31282651F4B9 /* IntentResult.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		30DAC9EEF4A6E0FB9BAB06C4 /* MessageBubble.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageBubble.swift; sourceTree = "<group>"; };
+		31E742294A570F72FC87954E /* FreeFallApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FreeFallApp.swift; sourceTree = "<group>"; };
+		35A4F5E378A2F8091F0C7C9C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		3B5FAB7BDB6EB13022EBA59C /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
+		3E60667E61F9A8E53ABA36DC /* ActionExecutor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionExecutor.swift; sourceTree = "<group>"; };
+		3F250C9E47EF01EFAB9D90EC /* TypingIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypingIndicator.swift; sourceTree = "<group>"; };
+		42E9C236147D31282651F4B9 /* IntentResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntentResult.swift; sourceTree = "<group>"; };
+		6D86951022FB9305F041458D /* FreeFall.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = FreeFall.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		9EFCDD1BB4861EB6D6BB6D18 /* MessageRouting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageRouting.swift; sourceTree = "<group>"; };
+		B82EEB41E4515E62B5390966 /* ChatMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatMessage.swift; sourceTree = "<group>"; };
+		BABB5239530E2BD70E52B1C8 /* MacBackendRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacBackendRouter.swift; sourceTree = "<group>"; };
+		E9BC4651AF599864049B992E /* ChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatView.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		1961C54F044E5FC62E95034F = {
+			isa = PBXGroup;
+			children = (
+				D9DE2EEA39E74BC6F06856D5 /* FreeFall */,
+				E0E16237B02D7CBFD5FE5E8E /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		5A1BFF10665D43F485C87588 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				31E742294A570F72FC87954E /* FreeFallApp.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		8FAABA8886B930D7A72F1C20 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				E9BC4651AF599864049B992E /* ChatView.swift */,
+				30DAC9EEF4A6E0FB9BAB06C4 /* MessageBubble.swift */,
+				3F250C9E47EF01EFAB9D90EC /* TypingIndicator.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		D9DE2EEA39E74BC6F06856D5 /* FreeFall */ = {
+			isa = PBXGroup;
+			children = (
+				35A4F5E378A2F8091F0C7C9C /* Info.plist */,
+				5A1BFF10665D43F485C87588 /* App */,
+				F290B9D904892241BA5D634D /* Model */,
+				8FAABA8886B930D7A72F1C20 /* Views */,
+			);
+			path = FreeFall;
+			sourceTree = "<group>";
+		};
+		E0E16237B02D7CBFD5FE5E8E /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				6D86951022FB9305F041458D /* FreeFall.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		F290B9D904892241BA5D634D /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				3E60667E61F9A8E53ABA36DC /* ActionExecutor.swift */,
+				B82EEB41E4515E62B5390966 /* ChatMessage.swift */,
+				42E9C236147D31282651F4B9 /* IntentResult.swift */,
+				BABB5239530E2BD70E52B1C8 /* MacBackendRouter.swift */,
+				9EFCDD1BB4861EB6D6BB6D18 /* MessageRouting.swift */,
+				3B5FAB7BDB6EB13022EBA59C /* Settings.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		3B8CBF77BC7928CB8E67F0CA /* FreeFall */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3E3DC6B66A6660A9C26FCCCD /* Build configuration list for PBXNativeTarget "FreeFall" */;
+			buildPhases = (
+				E796FA295BE186E1CA236C29 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = FreeFall;
+			packageProductDependencies = (
+			);
+			productName = FreeFall;
+			productReference = 6D86951022FB9305F041458D /* FreeFall.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		DF80FEE90AFD5B5415F60221 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					3B8CBF77BC7928CB8E67F0CA = {
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 3C3DFD611E1C7E1893475651 /* Build configuration list for PBXProject "FreeFall" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 1961C54F044E5FC62E95034F;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = E0E16237B02D7CBFD5FE5E8E /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				3B8CBF77BC7928CB8E67F0CA /* FreeFall */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		E796FA295BE186E1CA236C29 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B2666B29BA34E3D4F6C133F6 /* ActionExecutor.swift in Sources */,
+				4C963009D6A1FD6028452B0F /* ChatMessage.swift in Sources */,
+				3C4F7DFA4F18DB606A28BB76 /* ChatView.swift in Sources */,
+				3A6EAF788063CD3D5DDA1C59 /* FreeFallApp.swift in Sources */,
+				ED6745D698F995E25B9A9444 /* IntentResult.swift in Sources */,
+				3162BEE90A9FB6EEA43717DB /* MacBackendRouter.swift in Sources */,
+				EB2CCF7258A2A65C454D86CF /* MessageBubble.swift in Sources */,
+				CDE0081A365AC176B7655707 /* MessageRouting.swift in Sources */,
+				55544482530C25AF52852714 /* Settings.swift in Sources */,
+				D2425EE6F8DA2035D06CF1AE /* TypingIndicator.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		0CF9D90919C5F6B21F2BF19A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = FreeFall/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.dhruva.FreeFall;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		2823D2EF8BE5F0A99FCBA2D4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGNING_ALLOWED = NO;
+				CODE_SIGNING_REQUIRED = NO;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = FreeFall/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.dhruva.FreeFall;
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		6346061CBDBCE42B0DD8DE57 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		C7FAEBA2B7AA82EDE2DD8086 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		3C3DFD611E1C7E1893475651 /* Build configuration list for PBXProject "FreeFall" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6346061CBDBCE42B0DD8DE57 /* Debug */,
+				C7FAEBA2B7AA82EDE2DD8086 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		3E3DC6B66A6660A9C26FCCCD /* Build configuration list for PBXNativeTarget "FreeFall" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2823D2EF8BE5F0A99FCBA2D4 /* Debug */,
+				0CF9D90919C5F6B21F2BF19A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = DF80FEE90AFD5B5415F60221 /* Project object */;
+}

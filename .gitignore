@@ -1,0 +1,3 @@
+.env
+mac-backend/.env
+__pycache__/

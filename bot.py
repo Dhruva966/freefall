@@ -9,15 +9,16 @@ import time
 
 import db
 import send
+import llm
+import functions
 
 POLL_INTERVAL = 1.5  # seconds
 
 
 def handle_message(sender: str, text: str) -> str:
-    """Return the reply for a given message, or empty string to stay silent."""
-    if "apple pie" in text.lower():
-        return "hello"
-    return ""
+    """Route message through Gemma, execute action, return reply."""
+    intent_result = llm.get_response(text)
+    return functions.execute(intent_result)
 
 
 def run() -> None:

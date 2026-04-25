@@ -1,0 +1,25 @@
+name: FreeFall
+options:
+  bundleIdPrefix: com.dhruva
+  deploymentTarget:
+    iOS: "16.0"
+targets:
+  FreeFall:
+    type: application
+    platform: iOS
+    sources:
+      - FreeFall
+    settings:
+      base:
+        CODE_SIGN_STYLE: Automatic
+      configs:
+        Debug:
+          CODE_SIGNING_ALLOWED: NO
+          CODE_SIGNING_REQUIRED: NO
+          PROVISIONING_PROFILE_SPECIFIER: ""
+    info:
+      path: FreeFall/Info.plist
+      properties:
+        CFBundleDisplayName: "Free Fall"
+        NSAppTransportSecurity:
+          NSAllowsArbitraryLoads: true

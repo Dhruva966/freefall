@@ -195,6 +195,72 @@ Core assistant functionality works fully offline.
 
 ---
 
+## Agent-Driven Development — MANDATORY OPERATING MODE
+
+Claude Code MUST use agent and sub-agent driven development on every non-trivial
+task in this repo. This is not a suggestion. It is the required way of working.
+
+### Why
+
+Sub-agent parallelism multiplies throughput. Explore sub-agents keep the main
+context clean. Codex handles discrete build tasks without burning Claude Code
+credits on work that doesn't need interactive context. Serial, inline, single-
+agent work on parallelizable tasks is explicitly forbidden.
+
+### The Rules
+
+**DECOMPOSE FIRST.** Before writing any code, list all sub-tasks. Mark each as
+parallel (can run simultaneously) or sequential (depends on prior output). Only
+true data dependencies justify serial execution.
+
+**SPAWN EXPLORE SUB-AGENTS** for any codebase discovery spanning more than 2-3
+files. Do not read files inline to understand something a sub-agent can discover.
+
+**PARALLELIZE ALL INDEPENDENT WORK.** If a task has N independent pieces, spawn
+N sub-agents simultaneously. Do not do them one at a time.
+
+**USE `/codex` FOR ALL DISCRETE BUILD TASKS.** This preserves Claude Code credits
+for interactive debugging only. Mandatory `/codex` cases:
+- Any doc, skill, or AGENTS.md generation or update
+- Adding a new intent/function end-to-end
+- Refactoring a self-contained module
+- Writing or updating tests
+- **ALL code reviews — always `/codex`, no exceptions**
+- Any task where the full requirement fits in one prompt
+
+**USE Claude Code ONLY FOR:**
+- Active debugging with live error output
+- Multi-turn investigation where prior turns matter
+- Architectural decisions requiring back-and-forth
+
+**INTEGRATION IS THE ORCHESTRATOR'S JOB.** Sub-agents produce bounded outputs.
+The main context (orchestrator) integrates, resolves conflicts, writes the final
+result. Sub-agents never coordinate with each other directly.
+
+### Sub-Agent Prompt Requirements
+
+Every sub-agent spawn must specify:
+1. Exact bounded scope (what this agent owns)
+2. Exact files to read (paths)
+3. Exact output expected
+4. What NOT to do (scope boundary)
+5. Research-only vs write-code
+
+Vague sub-agent prompts produce vague results. Be specific.
+
+### Parallel Patterns for This Repo
+
+Adding a new intent → 3 parallel agents (router update / executor update /
+Swift model update), then 1 sequential pass to wire main.py + server.py.
+
+Pre-demo check → 4 parallel agents (curl all intents / secrets audit /
+DEMO_MODE responses / MockMessageRouter phrases).
+
+Debugging a broken intent → 3 parallel Explore agents (router prompt / executor
+function / live curl output), then 1 sequential fix.
+
+---
+
 ## Competitive Context
 
 **Poke** (poke.com) — direct competitor, launched March 2026, $300M valuation.
