@@ -10,9 +10,14 @@ final class ChatViewModel: ObservableObject {
     private let executor = ActionExecutor()
     private var router: MessageRouting
     private var cancellables: Set<AnyCancellable> = []
+    private let historyKey = "chat_history"
 
     init() {
         self.router = MockMessageRouter()
+        if let data = UserDefaults.standard.data(forKey: historyKey),
+           let saved = try? JSONDecoder().decode([ChatMessage].self, from: data) {
+            self.messages = saved
+        }
         refreshRouter()
 
         Publishers.CombineLatest(
@@ -23,6 +28,12 @@ final class ChatViewModel: ObservableObject {
             self?.refreshRouter()
         }
         .store(in: &cancellables)
+    }
+
+    private func saveHistory() {
+        if let data = try? JSONEncoder().encode(Array(messages.suffix(200))) {
+            UserDefaults.standard.set(data, forKey: historyKey)
+        }
     }
 
     func refreshRouter() {
@@ -44,13 +55,20 @@ final class ChatViewModel: ObservableObject {
         messages.append(ChatMessage(text: text, isUser: true))
         inputText = ""
         isThinking = true
+        saveHistory()
 
         Task {
             let result = await router.route(text)
             let reply = await executor.execute(result)
             messages.append(ChatMessage(text: reply, isUser: false))
             isThinking = false
+            saveHistory()
         }
+    }
+
+    func clearHistory() {
+        messages = []
+        UserDefaults.standard.removeObject(forKey: historyKey)
     }
 }
 
@@ -149,7 +167,7 @@ struct ChatView: View {
                 }
             }
             .sheet(isPresented: $showSettings, onDismiss: { vm.refreshRouter() }) {
-                SettingsSheet()
+                SettingsSheet(onClearHistory: { vm.clearHistory() })
             }
         }
     }
@@ -159,6 +177,7 @@ struct SettingsSheet: View {
     @ObservedObject private var settings = AppSettings.shared
     @Environment(\.dismiss) private var dismiss
     @State private var draft = AppSettings.shared.macIP
+    var onClearHistory: (() -> Void)? = nil
 
     var body: some View {
         NavigationStack {
@@ -184,6 +203,13 @@ struct SettingsSheet: View {
                         Task { await testConnection() }
                     }
                     .disabled(draft.trimmingCharacters(in: .whitespaces).isEmpty)
+                }
+
+                Section {
+                    Button("Clear Conversation History", role: .destructive) {
+                        onClearHistory?()
+                        dismiss()
+                    }
                 }
             }
             .navigationTitle("Settings")

@@ -3,24 +3,22 @@ import FoundationModels
 
 @available(iOS 26, *)
 final class PrivateRouter: MessageRouting {
+    // Private mode runs fully on-device with no internet. Only tools that work
+    // offline are registered here. Weather, restaurants, travel, and web search
+    // all require network access and are available in non-private mode only.
     private let reminderTool = ReminderTool()
     private let alarmTool = AlarmTool()
     private let calendarTool = CalendarTool()
-    private let weatherTool = WeatherTool()
-    private let findRestaurantsTool = FindRestaurantsTool()
-    private let placeFoodOrderTool = PlaceFoodOrderTool()
-    private let getTravelTimeTool = GetTravelTimeTool()
-    private let internetSearchTool = InternetSearchTool()
 
     private lazy var session = LanguageModelSession(
-        tools: [reminderTool, alarmTool, calendarTool, weatherTool,
-                findRestaurantsTool, placeFoodOrderTool, getTravelTimeTool, internetSearchTool],
+        tools: [reminderTool, alarmTool, calendarTool],
         instructions: """
-        You are Free Fall, a smart iPhone assistant running entirely on-device.
+        You are Free Fall, a private on-device assistant. No internet connection is available.
         The user’s current date and time is injected into every message in ISO 8601 format.
-        Use tools when the user wants to: create a reminder, set an alarm, create a calendar event, \
-        check weather, find nearby restaurants, place a food order, get travel time, or search the web.
-        If a tool is not needed, answer normally and concisely.
+        Use tools when the user wants to create a reminder, set an alarm, or add a calendar event.
+        For anything requiring internet (weather, restaurants, search, directions), let the user \
+        know private mode is offline-only and suggest switching to standard mode.
+        If no tool is needed, answer concisely from your own knowledge.
         """
     )
 
