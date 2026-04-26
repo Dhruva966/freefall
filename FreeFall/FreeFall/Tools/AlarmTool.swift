@@ -9,43 +9,21 @@ final class AlarmTool: Tool {
     let name = "setAlarm"
     let description = "Set an alarm. Use when user says 'set alarm', 'wake me up', 'alarm at'."
 
-    struct Arguments: Generable {
-        let time: String
+    @Generable
+    struct Arguments {
+        @Guide(description: "Alarm time in HH:MM 24-hour format, e.g. 07:30.")
+        var time: String
 
-        let label: String
-
-        static var generationSchema: GenerationSchema {
-            GenerationSchema(
-                type: Self.self,
-                description: "Arguments for setting an alarm.",
-                properties: [
-                    .init(name: "time", description: "The alarm time in HH:MM 24-hour format.", type: String.self),
-                    .init(name: "label", description: "The label for the alarm.", type: String.self)
-                ]
-            )
-        }
-
-        init(time: String, label: String) {
-            self.time = time
-            self.label = label
-        }
-
-        init(_ content: GeneratedContent) throws {
-            self.time = try content.value(forProperty: "time")
-            self.label = try content.value(forProperty: "label")
-        }
-
-        var generatedContent: GeneratedContent {
-            GeneratedContent(properties: ["time": time, "label": label])
-        }
+        @Guide(description: "Short label for the alarm, e.g. 'Morning workout'.")
+        var label: String
     }
 
     func call(arguments: Arguments) async throws -> String {
         let rawInput = "\(arguments.time),\(arguments.label)"
-        let encodedInput = rawInput.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? rawInput
+        let encoded = rawInput.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? rawInput
         await MainActor.run {
             UIApplication.shared.open(
-                URL(string: "shortcuts://run-shortcut?name=FreeFall-SetAlarm&input=\(encodedInput)")!
+                URL(string: "shortcuts://run-shortcut?name=FreeFall-SetAlarm&input=\(encoded)")!
             )
         }
         return "Alarm set for \(arguments.time)."

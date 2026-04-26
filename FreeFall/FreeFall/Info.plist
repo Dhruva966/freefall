@@ -20,17 +20,25 @@
 	<string>1.0</string>
 	<key>CFBundleVersion</key>
 	<string>1</string>
-	<key>NSAppTransportSecurity</key>
-	<dict>
-		<key>NSAllowsArbitraryLoads</key>
-		<true/>
-	</dict>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Free Fall uses your location to find nearby restaurants and calculate travel times.</string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>doordash</string>
 		<string>googlechrome</string>
 	</array>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
+	<key>NSCalendarsFullAccessUsageDescription</key>
+	<string>FreeFall adds events to your calendar.</string>
+	<key>NSCalendarsUsageDescription</key>
+	<string>FreeFall adds events to your calendar.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>FreeFall uses your location to find nearby restaurants, calculate travel times, and check weather.</string>
+	<key>NSRemindersFullAccessUsageDescription</key>
+	<string>FreeFall creates reminders for you.</string>
+	<key>NSRemindersUsageDescription</key>
+	<string>FreeFall creates reminders for you.</string>
 </dict>
 </plist>

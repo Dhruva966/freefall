@@ -25,5 +25,9 @@ targets:
         NSRemindersFullAccessUsageDescription: "FreeFall creates reminders for you."
         NSCalendarsUsageDescription: "FreeFall adds events to your calendar."
         NSCalendarsFullAccessUsageDescription: "FreeFall adds events to your calendar."
+        NSLocationWhenInUseUsageDescription: "FreeFall uses your location to find nearby restaurants, calculate travel times, and check weather."
+        LSApplicationQueriesSchemes:
+          - doordash
+          - googlechrome
         NSAppTransportSecurity:
           NSAllowsArbitraryLoads: true

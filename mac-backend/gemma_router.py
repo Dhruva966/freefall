@@ -19,13 +19,13 @@ Rules:
 - Default to "answer" for anything conversational, factual, math, or abstract.
 - Use a tool ONLY for reminders, calendar, alarms, weather, or Gmail.
 - Never ask for clarification — make a reasonable guess or answer directly.
-- Datetimes must be ISO 8601: YYYY-MM-DDTHH:MM:SS.
+- Datetimes must be ISO 8601 with timezone offset: YYYY-MM-DDTHH:MM:SS+HH:MM.
 - Tonight=20:00, morning=08:00, afternoon=14:00 when time is omitted.
 
 Examples:
-"Remind me to study at 7pm" -> {{"intent":"create_reminder","params":{{"title":"study","datetime":"{today}T19:00:00"}},"response":"Done. Reminding you to study at 7 PM."}}
+"Remind me to study at 7pm" -> {{"intent":"create_reminder","params":{{"title":"study","datetime":"{today}T19:00:00{tz}"}},"response":"Done. Reminding you to study at 7 PM."}}
 "What's the weather?" -> {{"intent":"get_weather","params":{{"when":"today"}},"response":"Checking..."}}
-"Add robotics practice tomorrow 4 to 6" -> {{"intent":"create_calendar_event","params":{{"title":"robotics practice","start":"{tomorrow}T16:00:00","end":"{tomorrow}T18:00:00"}},"response":"Added robotics practice tomorrow 4-6 PM."}}
+"Add robotics practice tomorrow 4 to 6" -> {{"intent":"create_calendar_event","params":{{"title":"robotics practice","start":"{tomorrow}T16:00:00{tz}","end":"{tomorrow}T18:00:00{tz}"}},"response":"Added robotics practice tomorrow 4-6 PM."}}
 "Why is the sky blue?" -> {{"intent":"answer","params":{{}},"response":"Sunlight scatters off air molecules. Blue scatters more than red, so the sky looks blue."}}
 "What's 2+2?" -> {{"intent":"answer","params":{{}},"response":"4."}}
 "How do I get better at coding?" -> {{"intent":"answer","params":{{}},"response":"Build things. Read others' code. Debug without Stack Overflow first. Repetition beats tutorials."}}
@@ -59,11 +59,14 @@ def pre_route(message: str) -> dict:
 
 
 def route(message: str, attempt: int = 0) -> dict:
-    now = datetime.now()
+    now = datetime.now().astimezone()
+    raw_tz = now.strftime("%z")  # e.g. -0400
+    tz = f"{raw_tz[:3]}:{raw_tz[3:]}"  # e.g. -04:00
     prompt = SYSTEM_PROMPT.format(
         datetime=now.isoformat(timespec="seconds"),
         today=now.strftime("%Y-%m-%d"),
         tomorrow=(now + timedelta(days=1)).strftime("%Y-%m-%d"),
+        tz=tz,
         tools=_build_tools_prompt(),
     )
     if attempt > 0:

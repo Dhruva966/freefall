@@ -38,7 +38,7 @@ final class ActionExecutor {
             let reminder = EKReminder(eventStore: eventStore)
             reminder.title = title
             reminder.calendar = eventStore.defaultCalendarForNewReminders()
-            if let date = ISO8601DateFormatter().date(from: datetimeStr) {
+            if let date = parseDate(datetimeStr) {
                 reminder.dueDateComponents = Calendar.current.dateComponents(
                     [.year, .month, .day, .hour, .minute], from: date)
             }
@@ -59,9 +59,8 @@ final class ActionExecutor {
             let event = EKEvent(eventStore: eventStore)
             event.title = title
             event.calendar = eventStore.defaultCalendarForNewEvents
-            let fmt = ISO8601DateFormatter()
-            event.startDate = fmt.date(from: start) ?? Date()
-            event.endDate = fmt.date(from: end) ?? Date().addingTimeInterval(3600)
+            event.startDate = parseDate(start) ?? Date()
+            event.endDate = parseDate(end) ?? Date().addingTimeInterval(3600)
             try eventStore.save(event, span: .thisEvent, commit: true)
         } catch {
             print("[ActionExecutor] calendar error: \(error)")
@@ -73,6 +72,17 @@ final class ActionExecutor {
         if let url = URL(string: "shortcuts://run-shortcut?name=FreeFall-SetAlarm&input=\(encoded)") {
             await UIApplication.shared.open(url)
         }
+    }
+
+    private func parseDate(_ str: String) -> Date? {
+        let withTZ = ISO8601DateFormatter()
+        withTZ.formatOptions = [.withInternetDateTime]
+        if let d = withTZ.date(from: str) { return d }
+
+        let noTZ = DateFormatter()
+        noTZ.locale = Locale(identifier: "en_US_POSIX")
+        noTZ.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
+        return noTZ.date(from: str)
     }
 
     private func runShortcut(name: String) async {
