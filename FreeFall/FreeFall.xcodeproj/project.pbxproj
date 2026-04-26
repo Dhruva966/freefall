@@ -8,19 +8,25 @@
 
 /* Begin PBXBuildFile section */
 		3162BEE90A9FB6EEA43717DB /* MacBackendRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = BABB5239530E2BD70E52B1C8 /* MacBackendRouter.swift */; };
+		397F119DFF677C4751BA7E9D /* ReminderTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01A2E35632F3EA958D2D368C /* ReminderTool.swift */; };
 		3A6EAF788063CD3D5DDA1C59 /* FreeFallApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31E742294A570F72FC87954E /* FreeFallApp.swift */; };
 		3C4F7DFA4F18DB606A28BB76 /* ChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9BC4651AF599864049B992E /* ChatView.swift */; };
+		4942FC8577EBBCC0F10679B4 /* CalendarTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 704D452C42F3298D66D2FE88 /* CalendarTool.swift */; };
 		4C963009D6A1FD6028452B0F /* ChatMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B82EEB41E4515E62B5390966 /* ChatMessage.swift */; };
 		55544482530C25AF52852714 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B5FAB7BDB6EB13022EBA59C /* Settings.swift */; };
+		6E783DC9E5D02105FAB6C493 /* AlarmTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9121C3260A157194F7684FA /* AlarmTool.swift */; };
 		8E7E335405CF6E494DEF0E4C /* DeviceAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AE3B6DA9C670404CA87BFD5 /* DeviceAction.swift */; };
 		B2666B29BA34E3D4F6C133F6 /* ActionExecutor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E60667E61F9A8E53ABA36DC /* ActionExecutor.swift */; };
 		CDE0081A365AC176B7655707 /* MessageRouting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EFCDD1BB4861EB6D6BB6D18 /* MessageRouting.swift */; };
+		D16ED4C8D8B64C5F6760AE03 /* PrivateRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E39E9E8C75B1000EFAD811E /* PrivateRouter.swift */; };
 		D2425EE6F8DA2035D06CF1AE /* TypingIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F250C9E47EF01EFAB9D90EC /* TypingIndicator.swift */; };
 		EB2CCF7258A2A65C454D86CF /* MessageBubble.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30DAC9EEF4A6E0FB9BAB06C4 /* MessageBubble.swift */; };
 		ED6745D698F995E25B9A9444 /* IntentResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E9C236147D31282651F4B9 /* IntentResult.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		01A2E35632F3EA958D2D368C /* ReminderTool.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderTool.swift; sourceTree = "<group>"; };
+		2E39E9E8C75B1000EFAD811E /* PrivateRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivateRouter.swift; sourceTree = "<group>"; };
 		30DAC9EEF4A6E0FB9BAB06C4 /* MessageBubble.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageBubble.swift; sourceTree = "<group>"; };
 		31E742294A570F72FC87954E /* FreeFallApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FreeFallApp.swift; sourceTree = "<group>"; };
 		35A4F5E378A2F8091F0C7C9C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -29,10 +35,12 @@
 		3F250C9E47EF01EFAB9D90EC /* TypingIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypingIndicator.swift; sourceTree = "<group>"; };
 		42E9C236147D31282651F4B9 /* IntentResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntentResult.swift; sourceTree = "<group>"; };
 		6D86951022FB9305F041458D /* FreeFall.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = FreeFall.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		704D452C42F3298D66D2FE88 /* CalendarTool.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarTool.swift; sourceTree = "<group>"; };
 		9AE3B6DA9C670404CA87BFD5 /* DeviceAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceAction.swift; sourceTree = "<group>"; };
 		9EFCDD1BB4861EB6D6BB6D18 /* MessageRouting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageRouting.swift; sourceTree = "<group>"; };
 		B82EEB41E4515E62B5390966 /* ChatMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatMessage.swift; sourceTree = "<group>"; };
 		BABB5239530E2BD70E52B1C8 /* MacBackendRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacBackendRouter.swift; sourceTree = "<group>"; };
+		D9121C3260A157194F7684FA /* AlarmTool.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlarmTool.swift; sourceTree = "<group>"; };
 		E9BC4651AF599864049B992E /* ChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -53,6 +61,16 @@
 			path = App;
 			sourceTree = "<group>";
 		};
+		68D32F43E20420F66249D70C /* Tools */ = {
+			isa = PBXGroup;
+			children = (
+				D9121C3260A157194F7684FA /* AlarmTool.swift */,
+				704D452C42F3298D66D2FE88 /* CalendarTool.swift */,
+				01A2E35632F3EA958D2D368C /* ReminderTool.swift */,
+			);
+			path = Tools;
+			sourceTree = "<group>";
+		};
 		8FAABA8886B930D7A72F1C20 /* Views */ = {
 			isa = PBXGroup;
 			children = (
@@ -69,6 +87,7 @@
 				35A4F5E378A2F8091F0C7C9C /* Info.plist */,
 				5A1BFF10665D43F485C87588 /* App */,
 				F290B9D904892241BA5D634D /* Model */,
+				68D32F43E20420F66249D70C /* Tools */,
 				8FAABA8886B930D7A72F1C20 /* Views */,
 			);
 			path = FreeFall;
@@ -91,6 +110,7 @@
 				42E9C236147D31282651F4B9 /* IntentResult.swift */,
 				BABB5239530E2BD70E52B1C8 /* MacBackendRouter.swift */,
 				9EFCDD1BB4861EB6D6BB6D18 /* MessageRouting.swift */,
+				2E39E9E8C75B1000EFAD811E /* PrivateRouter.swift */,
 				3B5FAB7BDB6EB13022EBA59C /* Settings.swift */,
 			);
 			path = Model;
@@ -155,6 +175,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				B2666B29BA34E3D4F6C133F6 /* ActionExecutor.swift in Sources */,
+				6E783DC9E5D02105FAB6C493 /* AlarmTool.swift in Sources */,
+				4942FC8577EBBCC0F10679B4 /* CalendarTool.swift in Sources */,
 				4C963009D6A1FD6028452B0F /* ChatMessage.swift in Sources */,
 				3C4F7DFA4F18DB606A28BB76 /* ChatView.swift in Sources */,
 				8E7E335405CF6E494DEF0E4C /* DeviceAction.swift in Sources */,
@@ -163,6 +185,8 @@
 				3162BEE90A9FB6EEA43717DB /* MacBackendRouter.swift in Sources */,
 				EB2CCF7258A2A65C454D86CF /* MessageBubble.swift in Sources */,
 				CDE0081A365AC176B7655707 /* MessageRouting.swift in Sources */,
+				D16ED4C8D8B64C5F6760AE03 /* PrivateRouter.swift in Sources */,
+				397F119DFF677C4751BA7E9D /* ReminderTool.swift in Sources */,
 				55544482530C25AF52852714 /* Settings.swift in Sources */,
 				D2425EE6F8DA2035D06CF1AE /* TypingIndicator.swift in Sources */,
 			);

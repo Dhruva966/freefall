@@ -2,19 +2,14 @@ import json
 import requests
 from datetime import datetime, timedelta
 from config import OLLAMA_URL, OLLAMA_MODEL
+from tools import TOOL_MAP
 
 SYSTEM_PROMPT = """You are a smart iPhone assistant. Answer the user naturally. Use a tool only when the request clearly needs one.
 
 Current date/time: {datetime}
 
 Available tools (use when appropriate):
-- send_message:    {{"to":"contact name","message":"text to send"}}
-- create_reminder: {{"title":"string","datetime":"ISO8601"}}
-- get_weather:     {{"when":"today|tomorrow"}}
-- create_calendar_event: {{"title":"string","start":"ISO8601","end":"ISO8601"}}
-- set_alarm:       {{"time":"HH:MM","label":"optional label"}}
-- set_alarms:      {{"times":["HH:MM",...],"label":"optional label"}}
-- search_gmail:    {{"query":"string"}} (email search only, NOT for texting)
+{tools}
 
 Output format — one line of valid JSON, no markdown:
 - Tool call: {{"intent":"<tool_name>","params":{{...}},"response":"<short confirmation>"}}
@@ -36,8 +31,15 @@ Examples:
 "How do I get better at coding?" -> {{"intent":"answer","params":{{}},"response":"Build things. Read others' code. Debug without Stack Overflow first. Repetition beats tutorials."}}
 "Text sarah im on my way" -> {{"intent":"send_message","params":{{"to":"sarah","message":"I'm on my way"}},"response":"Sent to Sarah."}}
 "Tell mom im running late" -> {{"intent":"send_message","params":{{"to":"mom","message":"I'm running late"}},"response":"Sent to mom."}}
-"Set alarms at 9am 12pm and 4pm to study" -> {{"intent":"set_alarms","params":{{"times":["09:00","12:00","16:00"],"label":"Study"}},"response":"Set 3 study alarms."}}
+"Set alarms at 9am 12pm and 4pm to study" -> {{"intent":"set_alarm","params":{{"times":["09:00","12:00","16:00"],"label":"Study"}},"response":"Set 3 study alarms."}}
 """
+
+
+def _build_tools_prompt() -> str:
+    return "\n".join(
+        f"- {tool.name}: {tool.description}\n  params: {tool.schema}"
+        for tool in TOOL_MAP.values()
+    )
 
 
 def _extract_json(raw: str) -> dict | None:
@@ -62,6 +64,7 @@ def route(message: str, attempt: int = 0) -> dict:
         datetime=now.isoformat(timespec="seconds"),
         today=now.strftime("%Y-%m-%d"),
         tomorrow=(now + timedelta(days=1)).strftime("%Y-%m-%d"),
+        tools=_build_tools_prompt(),
     )
     if attempt > 0:
         prompt += "\nIMPORTANT: output valid JSON only. No other text."

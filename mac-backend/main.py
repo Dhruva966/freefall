@@ -4,11 +4,7 @@ Intent dispatcher. Called by message_monitor.py for each new inbound message.
 
 import gemma_router as router
 import applescript_executor as ase
-import weather_service as wx
-from config import FREEFALL_HANDLE
-
-# Gmail is simulated in v1
-GMAIL_CANNED = "Found it. The UCLA Fast Track email mentions a Zoom info session on May 3rd."
+from tools import TOOL_MAP
 
 
 def handle(sender: str, message: str) -> None:
@@ -30,53 +26,10 @@ def _execute(intent: str, params: dict, model_response: str) -> str:
     if intent in ("answer", "clarify", "unknown"):
         return model_response or "Say more and I'll try again."
 
-    if intent == "send_message":
-        to = params.get("to", "")
-        msg = params.get("message", "")
-        if not to or not msg:
-            return "Who should I text, and what should I say?"
-        return ase.send_message_to_contact(to, msg)
+    tool = TOOL_MAP.get(intent)
+    if tool is None:
+        return model_response or "I didn't catch that. Try: \"Remind me to...\", \"What's the weather...\", or \"Add [event] to my calendar.\""
 
-    if intent == "create_reminder":
-        title = params.get("title", "reminder")
-        dt    = params.get("datetime", "")
-        if not dt:
-            return "What time should I remind you?"
-        return ase.create_reminder(title, dt)
-
-    if intent == "get_weather":
-        when = params.get("when", "today")
-        # City injected from config — could be user's location in v2
-        return wx.get_weather(when=when)
-
-    if intent == "create_calendar_event":
-        title = params.get("title", "Event")
-        start = params.get("start", "")
-        end   = params.get("end", "")
-        if not start or not end:
-            return "What time does it start and end?"
-        return ase.create_calendar_event(title, start, end)
-
-    if intent == "set_alarm":
-        t = params.get("time", "")
-        if not t:
-            return "What time should I set the alarm for?"
-        label = params.get("label", "⏰ Alarm")
-        result = ase.set_alarm(t, label=label)
-        return f"Alarm set for {result}."
-
-    if intent == "set_alarms":
-        times = params.get("times", [])
-        label = params.get("label", "Study")
-        if not times:
-            return "What times should I set alarms for?"
-        return ase.set_alarms(times, label=label)
-
-    if intent == "search_gmail":
-        return GMAIL_CANNED
-
-    if intent == "clarify":
-        return model_response or "Can you say that differently?"
-
-    # unknown / fallback
-    return model_response or "I didn't catch that. Try: \"Remind me to...\", \"What's the weather...\", or \"Add [event] to my calendar.\""
+    params["_response"] = model_response
+    reply, _ = tool.execute(params)
+    return reply

@@ -1,3 +1,4 @@
+import Combine
 import SwiftUI
 
 @MainActor
@@ -8,13 +9,30 @@ final class ChatViewModel: ObservableObject {
 
     private let executor = ActionExecutor()
     private var router: MessageRouting
+    private var cancellables: Set<AnyCancellable> = []
 
     init() {
-        let ip = AppSettings.shared.macIP
-        self.router = ip.isEmpty ? MockMessageRouter() : MacBackendRouter(macIP: ip)
+        self.router = MockMessageRouter()
+        refreshRouter()
+
+        Publishers.CombineLatest(
+            AppSettings.shared.$macIP.removeDuplicates(),
+            AppSettings.shared.$usePrivateMode.removeDuplicates()
+        )
+        .sink { [weak self] _, _ in
+            self?.refreshRouter()
+        }
+        .store(in: &cancellables)
     }
 
     func refreshRouter() {
+        if AppSettings.shared.usePrivateMode {
+            if #available(iOS 26, *) {
+                router = PrivateRouter()
+                return
+            }
+        }
+
         let ip = AppSettings.shared.macIP
         router = ip.isEmpty ? MockMessageRouter() : MacBackendRouter(macIP: ip)
     }
@@ -45,7 +63,7 @@ struct ChatView: View {
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
-                if !settings.isConfigured {
+                if !settings.usePrivateMode && !settings.isConfigured {
                     HStack {
                         Image(systemName: "exclamationmark.triangle.fill")
                             .foregroundColor(.orange)
@@ -119,9 +137,9 @@ struct ChatView: View {
                 ToolbarItem(placement: .principal) {
                     VStack(spacing: 1) {
                         Text("Free Fall").font(.headline)
-                        Text(settings.isConfigured ? "connected · private" : "mock mode")
+                        Text(statusText)
                             .font(.caption2)
-                            .foregroundColor(settings.isConfigured ? .secondary : .orange)
+                            .foregroundColor(statusColor)
                     }
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
@@ -153,6 +171,12 @@ struct SettingsSheet: View {
                     Text("Mac IP Address")
                 } footer: {
                     Text("Your Mac's local IP on the same WiFi network. Find it in System Settings → Network → Wi-Fi → Details.")
+                }
+
+                Section {
+                    Toggle("Private Mode (on-device AI)", isOn: $settings.usePrivateMode)
+                } footer: {
+                    Text("Runs AI entirely on your iPhone. Requires iPhone 15 Pro or later with Apple Intelligence enabled.")
                 }
 
                 Section {
@@ -200,6 +224,22 @@ struct SettingsSheet: View {
         } catch {
             connectionStatus = "Unreachable — check IP and server"
         }
+    }
+}
+
+private extension ChatView {
+    var statusText: String {
+        if settings.usePrivateMode {
+            return "on-device AI"
+        }
+        return settings.isConfigured ? "connected · private" : "mock mode"
+    }
+
+    var statusColor: Color {
+        if settings.usePrivateMode || settings.isConfigured {
+            return .secondary
+        }
+        return .orange
     }
 }
 
