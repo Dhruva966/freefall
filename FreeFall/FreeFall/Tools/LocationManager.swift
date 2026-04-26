@@ -1,57 +1,38 @@
 import CoreLocation
 import Foundation
 
-// Async wrapper around CLLocationManager used by all location-dependent tools.
-// One shared instance; requestLocation() fires a one-shot fix each call.
-final class LocationManager: NSObject, CLLocationManagerDelegate, @unchecked Sendable {
+// CLLocationUpdate.liveUpdates() is CoreLocation's native async-sequence API
+// (iOS 17+). It handles permission prompts internally, throws CLError.denied
+// when the user refuses, and delivers updates on an actor-safe async stream.
+// No delegate wiring, no continuation juggling, no main-thread guards needed.
+@available(iOS 17, *)
+final class LocationManager: Sendable {
     static let shared = LocationManager()
+    private init() {}
 
-    private let manager = CLLocationManager()
-    private var continuation: CheckedContinuation<CLLocation, Error>?
-
-    private override init() {
-        super.init()
-        manager.delegate = self
-        manager.desiredAccuracy = kCLLocationAccuracyBest
-    }
-
+    /// Returns the first valid location fix. Prompts for permission if needed.
     func currentLocation() async throws -> CLLocation {
-        return try await withCheckedThrowingContinuation { cont in
-            continuation = cont
-            switch manager.authorizationStatus {
-            case .notDetermined:
-                manager.requestWhenInUseAuthorization()
-            case .denied, .restricted:
-                cont.resume(throwing: LocationError.permissionDenied)
-                continuation = nil
-                return
-            default:
-                break
+        do {
+            for try await update in CLLocationUpdate.liveUpdates() {
+                if let loc = update.location { return loc }
             }
-            manager.requestLocation()
+        } catch let clError as CLError where clError.code == .denied {
+            throw LocationError.permissionDenied
         }
-    }
-
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        guard let loc = locations.first else { return }
-        continuation?.resume(returning: loc)
-        continuation = nil
-    }
-
-    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-        continuation?.resume(throwing: error)
-        continuation = nil
-    }
-
-    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
-        guard manager.authorizationStatus != .notDetermined else { return }
-        manager.requestLocation()
+        throw LocationError.unavailable
     }
 }
 
 enum LocationError: LocalizedError {
     case permissionDenied
+    case unavailable
+
     var errorDescription: String? {
-        "Location access denied. Enable it in Settings → Privacy → Location Services."
+        switch self {
+        case .permissionDenied:
+            return "Location access denied. Enable it in Settings → Privacy → Location Services."
+        case .unavailable:
+            return "Could not determine your location. Try again in a moment."
+        }
     }
 }
