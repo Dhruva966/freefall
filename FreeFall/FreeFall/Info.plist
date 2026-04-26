@@ -27,6 +27,12 @@
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Free Fall uses your location to find nearby restaurants and calculate travel times.</string>
+	<key>NSContactsUsageDescription</key>
+	<string>Free Fall accesses your contacts to send Apple Cash payments on your behalf.</string>
+	<key>NSFaceIDUsageDescription</key>
+	<string>Free Fall uses Face ID to authorize Apple Cash payments.</string>
+	<key>NSSiriUsageDescription</key>
+	<string>Free Fall uses Siri to initiate Apple Cash transfers.</string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>doordash</string>

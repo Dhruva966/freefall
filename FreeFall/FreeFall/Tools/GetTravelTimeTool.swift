@@ -2,30 +2,49 @@ import CoreLocation
 import FoundationModels
 import MapKit
 
-@available(iOS 18.1, *)
+@available(iOS 26, *)
 final class GetTravelTimeTool: Tool {
+    typealias Output = String
+
     let name = "getTravelTime"
-    let description = """
-        Returns estimated travel time and distance from the user's current location \
-        to a destination. Use this when the user asks how long it takes to get somewhere, \
-        or wants directions.
-        """
+    let description = "Get estimated travel time from the user's location to a destination. Use when they ask how long it takes to get somewhere."
 
-    @Generable
-    struct Arguments {
-        @Guide(description: "Destination address or place name, e.g. '1 Infinite Loop, Cupertino' or 'SFO Airport'.")
-        var destination: String
+    struct Arguments: Generable {
+        let destination: String
+        let transportType: String
 
-        @Guide(description: "Transport mode: 'driving', 'walking', or 'transit'.")
-        var transportType: String
+        static var generationSchema: GenerationSchema {
+            GenerationSchema(
+                type: Self.self,
+                description: "Arguments for estimating travel time.",
+                properties: [
+                    .init(name: "destination",  description: "Address or place name, e.g. 'SFO Airport' or '1 Infinite Loop, Cupertino'.", type: String.self),
+                    .init(name: "transportType", description: "Mode of transport: 'driving', 'walking', or 'transit'.", type: String.self)
+                ]
+            )
+        }
+
+        init(destination: String, transportType: String) {
+            self.destination   = destination
+            self.transportType = transportType
+        }
+
+        init(_ content: GeneratedContent) throws {
+            self.destination   = try content.value(forProperty: "destination")
+            self.transportType = try content.value(forProperty: "transportType")
+        }
+
+        var generatedContent: GeneratedContent {
+            GeneratedContent(properties: ["destination": destination, "transportType": transportType])
+        }
     }
 
-    func call(arguments: Arguments) async throws -> ToolOutput {
+    func call(arguments: Arguments) async throws -> String {
         let origin = try await LocationManager.shared.currentLocation()
 
         let placemarks = try await CLGeocoder().geocodeAddressString(arguments.destination)
         guard let dest = placemarks.first?.location else {
-            return ToolOutput("Could not find '\(arguments.destination)'. Try a more specific address.")
+            return "Could not find '\(arguments.destination)'. Try a more specific address."
         }
 
         let transport: MKDirectionsTransportType = {
@@ -36,20 +55,15 @@ final class GetTravelTimeTool: Tool {
             }
         }()
 
-        let request = MKDirections.Request()
+        let request       = MKDirections.Request()
         request.source      = MKMapItem(placemark: MKPlacemark(coordinate: origin.coordinate))
         request.destination = MKMapItem(placemark: MKPlacemark(coordinate: dest.coordinate))
         request.transportType = transport
 
-        let eta = try await MKDirections(request: request).calculateETA()
+        let eta     = try await MKDirections(request: request).calculateETA()
+        let minutes = Int(eta.expectedTravelTime / 60)
+        let miles   = String(format: "%.1f mi", eta.distance / 1609.34)
 
-        let minutes  = Int(eta.expectedTravelTime / 60)
-        let miles    = eta.distance / 1609.34
-        let distStr  = String(format: "%.1f mi", miles)
-        let modeStr  = arguments.transportType.lowercased()
-
-        return ToolOutput(
-            "\(arguments.destination) is \(distStr) away — about \(minutes) min by \(modeStr)."
-        )
+        return "\(arguments.destination) is \(miles) away — about \(minutes) min by \(arguments.transportType.lowercased())."
     }
 }
