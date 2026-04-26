@@ -21,5 +21,9 @@ targets:
       path: FreeFall/Info.plist
       properties:
         CFBundleDisplayName: "Free Fall"
+        NSRemindersUsageDescription: "FreeFall creates reminders for you."
+        NSRemindersFullAccessUsageDescription: "FreeFall creates reminders for you."
+        NSCalendarsUsageDescription: "FreeFall adds events to your calendar."
+        NSCalendarsFullAccessUsageDescription: "FreeFall adds events to your calendar."
         NSAppTransportSecurity:
           NSAllowsArbitraryLoads: true

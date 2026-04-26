@@ -14,7 +14,7 @@ GMAIL_CANNED = "Found it. The UCLA Fast Track email mentions a Zoom info session
 def handle(sender: str, message: str) -> None:
     print(f"[main] routing: \"{message}\"")
 
-    result = router.route(message)
+    result = router.pre_route(message)
     intent = result.get("intent", "unknown")
     params = result.get("params", {})
 
@@ -27,6 +27,16 @@ def handle(sender: str, message: str) -> None:
 
 
 def _execute(intent: str, params: dict, model_response: str) -> str:
+    if intent in ("answer", "clarify", "unknown"):
+        return model_response or "Say more and I'll try again."
+
+    if intent == "send_message":
+        to = params.get("to", "")
+        msg = params.get("message", "")
+        if not to or not msg:
+            return "Who should I text, and what should I say?"
+        return ase.send_message_to_contact(to, msg)
+
     if intent == "create_reminder":
         title = params.get("title", "reminder")
         dt    = params.get("datetime", "")
@@ -51,7 +61,16 @@ def _execute(intent: str, params: dict, model_response: str) -> str:
         t = params.get("time", "")
         if not t:
             return "What time should I set the alarm for?"
-        return ase.set_alarm(t)
+        label = params.get("label", "⏰ Alarm")
+        result = ase.set_alarm(t, label=label)
+        return f"Alarm set for {result}."
+
+    if intent == "set_alarms":
+        times = params.get("times", [])
+        label = params.get("label", "Study")
+        if not times:
+            return "What times should I set alarms for?"
+        return ase.set_alarms(times, label=label)
 
     if intent == "search_gmail":
         return GMAIL_CANNED

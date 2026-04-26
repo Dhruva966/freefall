@@ -3,6 +3,11 @@ import Foundation
 // Sends message text to the mac-backend FastAPI server and returns the reply.
 // The Mac handles routing, LLM inference, and AppleScript execution.
 final class MacBackendRouter: MessageRouting {
+    private struct BackendResponse: Decodable {
+        let reply: String
+        let actions: [DeviceAction]
+    }
+
     private let macIP: String
 
     init(macIP: String) {
@@ -26,9 +31,14 @@ final class MacBackendRouter: MessageRouting {
 
         do {
             let (responseData, _) = try await URLSession.shared.data(for: req)
-            if let json = try? JSONSerialization.jsonObject(with: responseData) as? [String: Any],
-               let reply = json["reply"] as? String {
-                return IntentResult(intent: .unknown, params: IntentParams(), response: reply)
+            let decoder = JSONDecoder()
+            if let backendResponse = try? decoder.decode(BackendResponse.self, from: responseData) {
+                return IntentResult(
+                    intent: .unknown,
+                    params: IntentParams(),
+                    response: backendResponse.reply,
+                    actions: backendResponse.actions
+                )
             }
             return error("Unexpected response from Mac backend.")
         } catch {

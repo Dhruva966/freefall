@@ -33,6 +33,7 @@ struct IntentResult: Codable {
     let intent: Intent
     let params: IntentParams
     let response: String
+    var actions: [DeviceAction] = []
 
     static let unknown = IntentResult(
         intent: .unknown,

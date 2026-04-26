@@ -18,6 +18,42 @@ def send_imessage(handle: str, text: str) -> None:
     ''')
 
 
+def lookup_contact(name: str) -> str | None:
+    """Returns phone or email for a contact by first name, or None if not found."""
+    escaped = name.replace('"', '\\"')
+    script = f'''
+        tell application "Contacts"
+            set matches to (every person whose name contains "{escaped}")
+            if (count of matches) = 0 then return ""
+            set p to item 1 of matches
+            if (count of phones of p) > 0 then
+                return value of item 1 of phones of p
+            else if (count of emails of p) > 0 then
+                return value of item 1 of emails of p
+            end if
+            return ""
+        end tell
+    '''
+    result = subprocess.run(["osascript", "-e", script], capture_output=True, text=True)
+    val = result.stdout.strip()
+    return val if val else None
+
+
+def send_message_to_contact(name: str, message: str) -> str:
+    handle = lookup_contact(name)
+    if not handle:
+        return f"Couldn't find {name} in your contacts."
+    escaped_msg = message.replace('"', '\\"')
+    _run(f'''
+        tell application "Messages"
+            set targetService to 1st service whose service type = iMessage
+            set targetBuddy to buddy "{handle}" of targetService
+            send "{escaped_msg}" to targetBuddy
+        end tell
+    ''')
+    return f"Sent to {name}: \"{message}\""
+
+
 def create_reminder(title: str, iso_datetime: str) -> str:
     try:
         dt = datetime.fromisoformat(iso_datetime)
@@ -54,22 +90,32 @@ def create_calendar_event(title: str, start_iso: str, end_iso: str) -> str:
     return f"Added {title} {start.strftime('%-I:%M')}–{end.strftime('%-I:%M %p')}."
 
 
-def set_alarm(time_hhmm: str) -> str:
-    # macOS Clock.app has no AppleScript dictionary — best we can do is open Clock
-    # and instruct user. For demo, create a reminder 1 min before as fallback.
+def set_alarm(time_hhmm: str, label: str = "⏰ Alarm") -> str:
     try:
         h, m = time_hhmm.split(":")
         now = datetime.now()
         alarm_dt = now.replace(hour=int(h), minute=int(m), second=0, microsecond=0)
         mac_date = alarm_dt.strftime("%A, %B %d, %Y at %I:%M %p")
+        escaped_label = label.replace('"', '\\"')
     except Exception:
         return "Couldn't parse the alarm time."
 
     _run(f'''
         tell application "Reminders"
             tell list "Reminders"
-                make new reminder with properties {{name:"⏰ Alarm", due date:date "{mac_date}"}}
+                make new reminder with properties {{name:"{escaped_label}", due date:date "{mac_date}"}}
             end tell
         end tell
     ''')
-    return f"Set an alarm reminder for {alarm_dt.strftime('%-I:%M %p')}. It'll ping you on all your Apple devices."
+    return alarm_dt.strftime("%-I:%M %p")
+
+
+def set_alarms(times: list[str], label: str = "Study") -> str:
+    results = []
+    for t in times:
+        result = set_alarm(t, label=f"⏰ {label}")
+        results.append(result)
+    if not results:
+        return "No valid times found."
+    joined = ", ".join(results)
+    return f"Set {len(results)} alarms: {joined}. They'll ping you on all your Apple devices."
