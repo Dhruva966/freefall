@@ -11,6 +11,7 @@ final class PrivateRouter: MessageRouting {
     private let calendarTool = CalendarTool()
 
     private lazy var session = LanguageModelSession(
+        model: SystemLanguageModel.default,
         tools: [reminderTool, alarmTool, calendarTool],
         instructions: """
         You are Free Fall, a private on-device assistant. No internet connection is available.

@@ -12,28 +12,10 @@ final class InternetSearchTool: Tool {
     let name = "internetSearch"
     let description = "Search the internet and return results. Use for current events, facts, or anything the on-device model may not know."
 
-    struct Arguments: Generable {
-        let query: String
-
-        static var generationSchema: GenerationSchema {
-            GenerationSchema(
-                type: Self.self,
-                description: "Arguments for an internet search.",
-                properties: [
-                    .init(name: "query", description: "The search query, e.g. 'best sushi in San Jose' or 'Tesla stock price'.", type: String.self)
-                ]
-            )
-        }
-
-        init(query: String) { self.query = query }
-
-        init(_ content: GeneratedContent) throws {
-            self.query = try content.value(forProperty: "query")
-        }
-
-        var generatedContent: GeneratedContent {
-            GeneratedContent(properties: ["query": query])
-        }
+    @Generable
+    struct Arguments {
+        @Guide(description: "The search query, e.g. 'best sushi in San Jose' or 'Tesla stock price'.")
+        var query: String
     }
 
     private struct DDGResponse: Decodable {

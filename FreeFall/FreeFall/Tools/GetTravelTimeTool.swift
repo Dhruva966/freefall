@@ -1,4 +1,3 @@
-import CoreLocation
 import FoundationModels
 import MapKit
 
@@ -9,41 +8,23 @@ final class GetTravelTimeTool: Tool {
     let name = "getTravelTime"
     let description = "Get estimated travel time from the user's location to a destination. Use when they ask how long it takes to get somewhere."
 
-    struct Arguments: Generable {
-        let destination: String
-        let transportType: String
+    @Generable
+    struct Arguments {
+        @Guide(description: "Address or place name, e.g. 'SFO Airport' or '1 Infinite Loop, Cupertino'.")
+        var destination: String
 
-        static var generationSchema: GenerationSchema {
-            GenerationSchema(
-                type: Self.self,
-                description: "Arguments for estimating travel time.",
-                properties: [
-                    .init(name: "destination",   description: "Address or place name, e.g. 'SFO Airport' or '1 Infinite Loop, Cupertino'.", type: String.self),
-                    .init(name: "transportType", description: "Mode of transport: 'driving', 'walking', or 'transit'.", type: String.self)
-                ]
-            )
-        }
-
-        init(destination: String, transportType: String) {
-            self.destination   = destination
-            self.transportType = transportType
-        }
-
-        init(_ content: GeneratedContent) throws {
-            self.destination   = try content.value(forProperty: "destination")
-            self.transportType = try content.value(forProperty: "transportType")
-        }
-
-        var generatedContent: GeneratedContent {
-            GeneratedContent(properties: ["destination": destination, "transportType": transportType])
-        }
+        @Guide(description: "Mode of transport: 'driving', 'walking', or 'transit'.")
+        var transportType: String
     }
 
     func call(arguments: Arguments) async throws -> String {
         let origin = try await LocationManager.shared.currentLocation()
 
-        let placemarks = try await CLGeocoder().geocodeAddressString(arguments.destination)
-        guard let dest = placemarks.first?.location else {
+        guard let geoRequest = MKGeocodingRequest(addressString: arguments.destination) else {
+            return "Couldn't build a geocoding request for '\(arguments.destination)'."
+        }
+        let mapItems = try await geoRequest.mapItems
+        guard let dest = mapItems.first?.location else {
             return "Could not find '\(arguments.destination)'. Try a more specific address."
         }
 

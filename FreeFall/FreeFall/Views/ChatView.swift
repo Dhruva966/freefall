@@ -1,15 +1,14 @@
-import Combine
 import SwiftUI
 
 @MainActor
-final class ChatViewModel: ObservableObject {
-    @Published var messages: [ChatMessage] = []
-    @Published var inputText = ""
-    @Published var isThinking = false
+@Observable
+final class ChatViewModel {
+    var messages: [ChatMessage] = []
+    var inputText = ""
+    var isThinking = false
 
     private let executor = ActionExecutor()
     private var router: MessageRouting
-    private var cancellables: Set<AnyCancellable> = []
     private let historyKey = "chat_history"
 
     init() {
@@ -19,21 +18,6 @@ final class ChatViewModel: ObservableObject {
             self.messages = saved
         }
         refreshRouter()
-
-        Publishers.CombineLatest(
-            AppSettings.shared.$macIP.removeDuplicates(),
-            AppSettings.shared.$usePrivateMode.removeDuplicates()
-        )
-        .sink { [weak self] _, _ in
-            self?.refreshRouter()
-        }
-        .store(in: &cancellables)
-    }
-
-    private func saveHistory() {
-        if let data = try? JSONEncoder().encode(Array(messages.suffix(200))) {
-            UserDefaults.standard.set(data, forKey: historyKey)
-        }
     }
 
     func refreshRouter() {
@@ -43,7 +27,6 @@ final class ChatViewModel: ObservableObject {
                 return
             }
         }
-
         let ip = AppSettings.shared.macIP
         router = ip.isEmpty ? MockMessageRouter() : MacBackendRouter(macIP: ip)
     }
@@ -52,15 +35,15 @@ final class ChatViewModel: ObservableObject {
         let text = inputText.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !text.isEmpty else { return }
 
-        messages.append(ChatMessage(text: text, isUser: true))
+        messages.append(ChatMessage(role: .user, text: text))
         inputText = ""
         isThinking = true
         saveHistory()
 
         Task {
             let result = await router.route(text)
-            let reply = await executor.execute(result)
-            messages.append(ChatMessage(text: reply, isUser: false))
+            let reply  = await executor.execute(result)
+            messages.append(ChatMessage(role: .assistant, text: reply))
             isThinking = false
             saveHistory()
         }
@@ -70,15 +53,21 @@ final class ChatViewModel: ObservableObject {
         messages = []
         UserDefaults.standard.removeObject(forKey: historyKey)
     }
+
+    private func saveHistory() {
+        if let data = try? JSONEncoder().encode(Array(messages.suffix(200))) {
+            UserDefaults.standard.set(data, forKey: historyKey)
+        }
+    }
 }
 
 struct ChatView: View {
-    @StateObject private var vm = ChatViewModel()
-    @StateObject private var settings = AppSettings.shared
+    @State private var vm = ChatViewModel()
     @FocusState private var inputFocused: Bool
     @State private var showSettings = false
 
     var body: some View {
+        let settings = AppSettings.shared
         NavigationStack {
             VStack(spacing: 0) {
                 if !settings.usePrivateMode && !settings.isConfigured {
@@ -136,9 +125,7 @@ struct ChatView: View {
                         .focused($inputFocused)
                         .onSubmit { vm.send() }
 
-                    Button {
-                        vm.send()
-                    } label: {
+                    Button { vm.send() } label: {
                         Image(systemName: "arrow.up.circle.fill")
                             .font(.system(size: 28))
                             .foregroundColor(vm.inputText.isEmpty ? .gray : .blue)
@@ -155,9 +142,9 @@ struct ChatView: View {
                 ToolbarItem(placement: .principal) {
                     VStack(spacing: 1) {
                         Text("Free Fall").font(.headline)
-                        Text(statusText)
+                        Text(statusText(settings))
                             .font(.caption2)
-                            .foregroundColor(statusColor)
+                            .foregroundColor(statusColor(settings))
                     }
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
@@ -169,17 +156,27 @@ struct ChatView: View {
             .sheet(isPresented: $showSettings, onDismiss: { vm.refreshRouter() }) {
                 SettingsSheet(onClearHistory: { vm.clearHistory() })
             }
+            .onChange(of: AppSettings.shared.usePrivateMode) { _ in vm.refreshRouter() }
+            .onChange(of: AppSettings.shared.macIP) { _ in vm.refreshRouter() }
         }
+    }
+
+    private func statusText(_ s: AppSettings) -> String {
+        s.usePrivateMode ? "on-device AI" : (s.isConfigured ? "connected · private" : "mock mode")
+    }
+
+    private func statusColor(_ s: AppSettings) -> Color {
+        (s.usePrivateMode || s.isConfigured) ? .secondary : .orange
     }
 }
 
 struct SettingsSheet: View {
-    @ObservedObject private var settings = AppSettings.shared
-    @Environment(\.dismiss) private var dismiss
     @State private var draft = AppSettings.shared.macIP
+    @Environment(\.dismiss) private var dismiss
     var onClearHistory: (() -> Void)? = nil
 
     var body: some View {
+        let settings = AppSettings.shared
         NavigationStack {
             Form {
                 Section {
@@ -193,9 +190,12 @@ struct SettingsSheet: View {
                 }
 
                 Section {
-                    Toggle("Private Mode (on-device AI)", isOn: $settings.usePrivateMode)
+                    Toggle("Private Mode (on-device AI)", isOn: Binding(
+                        get: { settings.usePrivateMode },
+                        set: { settings.usePrivateMode = $0 }
+                    ))
                 } footer: {
-                    Text("Runs AI entirely on your iPhone. Requires iPhone 15 Pro or later with Apple Intelligence enabled.")
+                    Text("Runs AI entirely on your iPhone with no internet. Requires iPhone 15 Pro or later with Apple Intelligence enabled.")
                 }
 
                 Section {
@@ -232,40 +232,17 @@ struct SettingsSheet: View {
 
     private func testConnection() async {
         let ip = draft.trimmingCharacters(in: .whitespaces)
-        guard let url = URL(string: "http://\(ip):8000/message") else {
-            connectionStatus = "Invalid IP"
-            return
-        }
+        guard let url = URL(string: "http://\(ip):8000/message") else { return }
         var req = URLRequest(url: url, timeoutInterval: 5)
         req.httpMethod = "POST"
         req.setValue("application/json", forHTTPHeaderField: "Content-Type")
         req.httpBody = try? JSONSerialization.data(withJSONObject: ["text": "ping", "sender": "ios-test"])
         do {
             let (_, response) = try await URLSession.shared.data(for: req)
-            if let http = response as? HTTPURLResponse, http.statusCode == 200 {
-                connectionStatus = "Connected"
-            } else {
-                connectionStatus = "Server error"
-            }
+            connectionStatus = (response as? HTTPURLResponse)?.statusCode == 200 ? "Connected" : "Server error"
         } catch {
             connectionStatus = "Unreachable — check IP and server"
         }
-    }
-}
-
-private extension ChatView {
-    var statusText: String {
-        if settings.usePrivateMode {
-            return "on-device AI"
-        }
-        return settings.isConfigured ? "connected · private" : "mock mode"
-    }
-
-    var statusColor: Color {
-        if settings.usePrivateMode || settings.isConfigured {
-            return .secondary
-        }
-        return .orange
     }
 }
 

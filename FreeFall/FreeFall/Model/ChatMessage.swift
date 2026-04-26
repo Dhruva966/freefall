@@ -2,12 +2,13 @@ import Foundation
 
 struct ChatMessage: Identifiable, Codable {
     let id: UUID
+    enum Role: String, Codable { case user, assistant }
+    let role: Role
     let text: String
-    let isUser: Bool
 
-    init(text: String, isUser: Bool) {
-        self.id = UUID()
+    init(role: Role, text: String) {
+        self.id   = UUID()
+        self.role = role
         self.text = text
-        self.isUser = isUser
     }
 }

@@ -2,7 +2,7 @@ name: FreeFall
 options:
   bundleIdPrefix: com.dhruva
   deploymentTarget:
-    iOS: "16.0"
+    iOS: "17.0"
 targets:
   FreeFall:
     type: application
@@ -17,6 +17,10 @@ targets:
           CODE_SIGNING_ALLOWED: NO
           CODE_SIGNING_REQUIRED: NO
           PROVISIONING_PROFILE_SPECIFIER: ""
+    entitlements:
+      path: FreeFall/FreeFall.entitlements
+      properties:
+        com.apple.developer.weatherkit: true
     info:
       path: FreeFall/Info.plist
       properties:
@@ -26,6 +30,9 @@ targets:
         NSCalendarsUsageDescription: "FreeFall adds events to your calendar."
         NSCalendarsFullAccessUsageDescription: "FreeFall adds events to your calendar."
         NSLocationWhenInUseUsageDescription: "FreeFall uses your location to find nearby restaurants, calculate travel times, and check weather."
+        NSContactsUsageDescription: "Free Fall accesses your contacts to send Apple Cash payments on your behalf."
+        NSFaceIDUsageDescription: "Free Fall uses Face ID to authorize Apple Cash payments."
+        NSSiriUsageDescription: "Free Fall uses Siri to initiate Apple Cash transfers."
         LSApplicationQueriesSchemes:
           - doordash
           - googlechrome

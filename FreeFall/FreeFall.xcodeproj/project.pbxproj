@@ -12,6 +12,7 @@
 		39E51BAE0A709077E1D26376 /* FindRestaurantsTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35E6958976AA8E252E1D2F50 /* FindRestaurantsTool.swift */; };
 		3A6EAF788063CD3D5DDA1C59 /* FreeFallApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31E742294A570F72FC87954E /* FreeFallApp.swift */; };
 		3C4F7DFA4F18DB606A28BB76 /* ChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9BC4651AF599864049B992E /* ChatView.swift */; };
+		46FC682CD6CDFB1E4548D342 /* SendPaymentTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = C83AE14CACAF0CC1D8CD3D0F /* SendPaymentTool.swift */; };
 		4942FC8577EBBCC0F10679B4 /* CalendarTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 704D452C42F3298D66D2FE88 /* CalendarTool.swift */; };
 		4C963009D6A1FD6028452B0F /* ChatMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B82EEB41E4515E62B5390966 /* ChatMessage.swift */; };
 		55544482530C25AF52852714 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B5FAB7BDB6EB13022EBA59C /* Settings.swift */; };
@@ -47,11 +48,13 @@
 		6D86951022FB9305F041458D /* FreeFall.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = FreeFall.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		704D452C42F3298D66D2FE88 /* CalendarTool.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarTool.swift; sourceTree = "<group>"; };
 		71D5E4242E2DB1C7CACE20AF /* InternetSearchTool.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InternetSearchTool.swift; sourceTree = "<group>"; };
+		7841DB1AA4DBFA90E4DC5714 /* FreeFall.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FreeFall.entitlements; sourceTree = "<group>"; };
 		8BEB6F2FAC4229FF433E04C2 /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
 		9AE3B6DA9C670404CA87BFD5 /* DeviceAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceAction.swift; sourceTree = "<group>"; };
 		9EFCDD1BB4861EB6D6BB6D18 /* MessageRouting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageRouting.swift; sourceTree = "<group>"; };
 		B82EEB41E4515E62B5390966 /* ChatMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatMessage.swift; sourceTree = "<group>"; };
 		BABB5239530E2BD70E52B1C8 /* MacBackendRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacBackendRouter.swift; sourceTree = "<group>"; };
+		C83AE14CACAF0CC1D8CD3D0F /* SendPaymentTool.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendPaymentTool.swift; sourceTree = "<group>"; };
 		D9121C3260A157194F7684FA /* AlarmTool.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlarmTool.swift; sourceTree = "<group>"; };
 		E9BC4651AF599864049B992E /* ChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -84,6 +87,7 @@
 				8BEB6F2FAC4229FF433E04C2 /* LocationManager.swift */,
 				20F3E14668093B23A8C2E1A2 /* PlaceFoodOrderTool.swift */,
 				01A2E35632F3EA958D2D368C /* ReminderTool.swift */,
+				C83AE14CACAF0CC1D8CD3D0F /* SendPaymentTool.swift */,
 				0BA41D21679D64F006912E02 /* WeatherTool.swift */,
 			);
 			path = Tools;
@@ -102,6 +106,7 @@
 		D9DE2EEA39E74BC6F06856D5 /* FreeFall */ = {
 			isa = PBXGroup;
 			children = (
+				7841DB1AA4DBFA90E4DC5714 /* FreeFall.entitlements */,
 				35A4F5E378A2F8091F0C7C9C /* Info.plist */,
 				5A1BFF10665D43F485C87588 /* App */,
 				F290B9D904892241BA5D634D /* Model */,
@@ -210,6 +215,7 @@
 				8F75B17957803D0CD2D5F04C /* PlaceFoodOrderTool.swift in Sources */,
 				D16ED4C8D8B64C5F6760AE03 /* PrivateRouter.swift in Sources */,
 				397F119DFF677C4751BA7E9D /* ReminderTool.swift in Sources */,
+				46FC682CD6CDFB1E4548D342 /* SendPaymentTool.swift in Sources */,
 				55544482530C25AF52852714 /* Settings.swift in Sources */,
 				D2425EE6F8DA2035D06CF1AE /* TypingIndicator.swift in Sources */,
 				9C9F03AC563BF2443E08A984 /* WeatherTool.swift in Sources */,
@@ -223,6 +229,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = FreeFall/FreeFall.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = FreeFall/Info.plist;
@@ -242,6 +249,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGNING_ALLOWED = NO;
 				CODE_SIGNING_REQUIRED = NO;
+				CODE_SIGN_ENTITLEMENTS = FreeFall/FreeFall.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = FreeFall/Info.plist;
@@ -307,7 +315,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -364,7 +372,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";

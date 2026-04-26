@@ -28,42 +28,16 @@ final class SendPaymentTool: Tool {
         Always confirm the amount with the user before calling this tool.
         """
 
-    struct Arguments: Generable {
-        let contactName: String
-        let amountUSD: String
-        let note: String
+    @Generable
+    struct Arguments {
+        @Guide(description: "Full name of the contact to pay, as it appears in the address book.")
+        var contactName: String
 
-        static var generationSchema: GenerationSchema {
-            GenerationSchema(
-                type: Self.self,
-                description: "Arguments for sending an Apple Cash payment.",
-                properties: [
-                    .init(name: "contactName", description: "Full name of the contact to pay, as it appears in the address book.", type: String.self),
-                    .init(name: "amountUSD",   description: "Dollar amount to send as a decimal string, e.g. '24.50'.", type: String.self),
-                    .init(name: "note",        description: "Payment note shown to the recipient, e.g. 'Dinner split – your share'.", type: String.self)
-                ]
-            )
-        }
+        @Guide(description: "Dollar amount to send as a decimal string, e.g. '24.50'.")
+        var amountUSD: String
 
-        init(contactName: String, amountUSD: String, note: String) {
-            self.contactName = contactName
-            self.amountUSD   = amountUSD
-            self.note        = note
-        }
-
-        init(_ content: GeneratedContent) throws {
-            self.contactName = try content.value(forProperty: "contactName")
-            self.amountUSD   = try content.value(forProperty: "amountUSD")
-            self.note        = try content.value(forProperty: "note")
-        }
-
-        var generatedContent: GeneratedContent {
-            GeneratedContent(properties: [
-                "contactName": contactName,
-                "amountUSD": amountUSD,
-                "note": note
-            ])
-        }
+        @Guide(description: "Payment note shown to the recipient, e.g. 'Dinner split – your share'.")
+        var note: String
     }
 
     func call(arguments: Arguments) async throws -> String {
@@ -71,21 +45,15 @@ final class SendPaymentTool: Tool {
             return "Invalid amount '\(arguments.amountUSD)'. Please provide a positive number."
         }
 
-        // Step 1 — biometric gate
         try await requireBiometrics(
             reason: "Authorize $\(arguments.amountUSD) Apple Cash payment to \(arguments.contactName)"
         )
 
-        // Step 2 — resolve contact to a phone number / email
         let person = try await resolveContact(named: arguments.contactName)
-
-        // Step 3 — donate INSendPaymentIntent; system surfaces Apple Cash confirmation
         try await donatePaymentIntent(to: person, amount: amount, note: arguments.note)
 
         return "Identity confirmed. Apple Cash transfer of $\(arguments.amountUSD) to \(arguments.contactName) is ready — tap the Apple Cash notification to complete."
     }
-
-    // MARK: - Biometric authentication
 
     private func requireBiometrics(reason: String) async throws {
         let context = LAContext()
@@ -104,8 +72,6 @@ final class SendPaymentTool: Tool {
         guard granted else { throw PaymentError.biometricsDenied }
     }
 
-    // MARK: - Contact resolution
-
     private func resolveContact(named name: String) async throws -> INPerson {
         let store = CNContactStore()
         try await store.requestAccess(for: .contacts)
@@ -121,9 +87,7 @@ final class SendPaymentTool: Tool {
             keysToFetch: keys
         )
 
-        guard let contact = contacts.first else {
-            throw PaymentError.contactNotFound(name)
-        }
+        guard let contact = contacts.first else { throw PaymentError.contactNotFound(name) }
 
         let handle: INPersonHandle = {
             if let phone = contact.phoneNumbers.first {
@@ -135,9 +99,7 @@ final class SendPaymentTool: Tool {
             return INPersonHandle(value: name, type: .unknown)
         }()
 
-        guard handle.type != .unknown else {
-            throw PaymentError.noContactHandle(name)
-        }
+        guard handle.type != .unknown else { throw PaymentError.noContactHandle(name) }
 
         var nameComponents = PersonNameComponents()
         nameComponents.givenName  = contact.givenName
@@ -152,8 +114,6 @@ final class SendPaymentTool: Tool {
             customIdentifier: nil
         )
     }
-
-    // MARK: - Apple Cash intent donation
 
     private func donatePaymentIntent(to person: INPerson, amount: Double, note: String) async throws {
         let intent = INSendPaymentIntent(
@@ -176,8 +136,6 @@ final class SendPaymentTool: Tool {
         }
     }
 }
-
-// MARK: - Errors
 
 enum PaymentError: LocalizedError {
     case biometricsUnavailable(String)
