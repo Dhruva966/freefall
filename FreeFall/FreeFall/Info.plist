@@ -25,5 +25,12 @@
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 	</dict>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Free Fall uses your location to find nearby restaurants and calculate travel times.</string>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>doordash</string>
+		<string>googlechrome</string>
+	</array>
 </dict>
 </plist>
