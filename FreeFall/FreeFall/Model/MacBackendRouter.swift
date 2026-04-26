@@ -6,6 +6,14 @@ final class MacBackendRouter: MessageRouting {
     private struct BackendResponse: Decodable {
         let reply: String
         let actions: [DeviceAction]
+
+        private enum CodingKeys: String, CodingKey { case reply, actions }
+
+        init(from decoder: Decoder) throws {
+            let c = try decoder.container(keyedBy: CodingKeys.self)
+            reply = try c.decode(String.self, forKey: .reply)
+            actions = (try? c.decode([DeviceAction].self, forKey: .actions)) ?? []
+        }
     }
 
     private let macIP: String

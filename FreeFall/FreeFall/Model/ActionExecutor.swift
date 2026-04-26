@@ -8,6 +8,7 @@ final class ActionExecutor {
 
     func execute(_ result: IntentResult) async -> String {
         for action in result.actions {
+            if case .runShortcut(let name) = action, name.isEmpty { continue }
             await executeAction(action)
         }
         return result.response

@@ -41,11 +41,8 @@ enum DeviceAction: Codable {
         case "run_shortcut":
             self = .runShortcut(name: try container.decode(String.self, forKey: .name))
         default:
-            throw DecodingError.dataCorruptedError(
-                forKey: .type,
-                in: container,
-                debugDescription: "Unsupported device action type: \(type)"
-            )
+            // Unknown action type — skip gracefully rather than failing the whole response
+            self = .runShortcut(name: "")
         }
     }
 
