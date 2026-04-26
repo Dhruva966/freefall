@@ -4,8 +4,10 @@ import UIKit
 // DoorDash has no public consumer ordering API. This tool deep-links into the
 // DoorDash app (or web) so the user can review and confirm the order themselves.
 // The LLM decides which restaurant to open; the human confirms the cart.
-@available(iOS 18.1, *)
+@available(iOS 26, *)
 final class PlaceFoodOrderTool: Tool {
+    typealias Output = String
+
     let name = "placeFoodOrder"
     let description = """
         Opens DoorDash to place a food order from a specific restaurant. Use this when \
@@ -21,7 +23,7 @@ final class PlaceFoodOrderTool: Tool {
         var items: String
     }
 
-    func call(arguments: Arguments) async throws -> ToolOutput {
+    func call(arguments: Arguments) async throws -> String {
         let encoded = arguments.restaurantName
             .addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
 
@@ -37,7 +39,7 @@ final class PlaceFoodOrderTool: Tool {
         }
 
         let itemSummary = arguments.items.isEmpty ? "" : " (\(arguments.items))"
-        return ToolOutput(
+        return (
             "Opened DoorDash for \(arguments.restaurantName)\(itemSummary). " +
             "Review your cart and tap Place Order to confirm."
         )

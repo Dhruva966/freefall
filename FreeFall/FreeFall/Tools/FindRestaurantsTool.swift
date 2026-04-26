@@ -1,8 +1,10 @@
 import FoundationModels
 import MapKit
 
-@available(iOS 18.1, *)
+@available(iOS 26, *)
 final class FindRestaurantsTool: Tool {
+    typealias Output = String
+
     let name = "findRestaurants"
     let description = """
         Finds restaurants near the user's current location. Use this when the user asks \
@@ -24,7 +26,7 @@ final class FindRestaurantsTool: Tool {
         var maxPriceLevel: Int
     }
 
-    func call(arguments: Arguments) async throws -> ToolOutput {
+    func call(arguments: Arguments) async throws -> String {
         let location = try await LocationManager.shared.currentLocation()
 
         let searchQuery = arguments.dietaryPreference == "none"
@@ -44,7 +46,7 @@ final class FindRestaurantsTool: Tool {
         let items = response.mapItems.prefix(max(1, arguments.maxResults))
 
         if items.isEmpty {
-            return ToolOutput("No restaurants found nearby for '\(searchQuery)'.")
+            return ("No restaurants found nearby for '\(searchQuery)'.")
         }
 
         let lines = items.map { item -> String in
@@ -57,6 +59,6 @@ final class FindRestaurantsTool: Tool {
             return "• \(name) — \(address)\(phone)"
         }
 
-        return ToolOutput("Restaurants near you:\n" + lines.joined(separator: "\n"))
+        return ("Restaurants near you:\n" + lines.joined(separator: "\n"))
     }
 }

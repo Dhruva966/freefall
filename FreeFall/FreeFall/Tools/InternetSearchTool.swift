@@ -5,8 +5,10 @@ import UIKit
 // Uses the DuckDuckGo Instant Answer API — no key required, runs a real network
 // request and returns text results directly to the LLM so it can reason over them.
 // Falls back to opening the browser for queries with no instant answer.
-@available(iOS 18.1, *)
+@available(iOS 26, *)
 final class InternetSearchTool: Tool {
+    typealias Output = String
+
     let name = "internetSearch"
     let description = """
         Searches the internet and returns a summary of results. Use this for current \
@@ -30,7 +32,7 @@ final class InternetSearchTool: Tool {
         }
     }
 
-    func call(arguments: Arguments) async throws -> ToolOutput {
+    func call(arguments: Arguments) async throws -> String {
         let encoded = arguments.query
             .addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
         let url = URL(string: "https://api.duckduckgo.com/?q=\(encoded)&format=json&no_html=1&skip_disambig=1")!
@@ -53,7 +55,7 @@ final class InternetSearchTool: Tool {
             parts.append(contentsOf: topics)
 
             if !parts.isEmpty {
-                return ToolOutput(parts.joined(separator: "\n"))
+                return (parts.joined(separator: "\n"))
             }
         }
 
@@ -69,6 +71,6 @@ final class InternetSearchTool: Tool {
             }
         }
 
-        return ToolOutput("No instant answer found for '\(arguments.query)' — opened search results in your browser.")
+        return ("No instant answer found for '\(arguments.query)' — opened search results in your browser.")
     }
 }

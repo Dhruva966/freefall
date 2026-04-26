@@ -2,8 +2,10 @@ import CoreLocation
 import FoundationModels
 import MapKit
 
-@available(iOS 18.1, *)
+@available(iOS 26, *)
 final class GetTravelTimeTool: Tool {
+    typealias Output = String
+
     let name = "getTravelTime"
     let description = """
         Returns estimated travel time and distance from the user's current location \
@@ -20,12 +22,12 @@ final class GetTravelTimeTool: Tool {
         var transportType: String
     }
 
-    func call(arguments: Arguments) async throws -> ToolOutput {
+    func call(arguments: Arguments) async throws -> String {
         let origin = try await LocationManager.shared.currentLocation()
 
         let placemarks = try await CLGeocoder().geocodeAddressString(arguments.destination)
         guard let dest = placemarks.first?.location else {
-            return ToolOutput("Could not find '\(arguments.destination)'. Try a more specific address.")
+            return ("Could not find '\(arguments.destination)'. Try a more specific address.")
         }
 
         let transport: MKDirectionsTransportType = {
@@ -48,7 +50,7 @@ final class GetTravelTimeTool: Tool {
         let distStr  = String(format: "%.1f mi", miles)
         let modeStr  = arguments.transportType.lowercased()
 
-        return ToolOutput(
+        return (
             "\(arguments.destination) is \(distStr) away — about \(minutes) min by \(modeStr)."
         )
     }
