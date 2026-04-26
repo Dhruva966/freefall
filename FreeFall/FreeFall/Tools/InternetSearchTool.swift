@@ -2,34 +2,45 @@ import Foundation
 import FoundationModels
 import UIKit
 
-// Uses the DuckDuckGo Instant Answer API — no key required, runs a real network
-// request and returns text results directly to the LLM so it can reason over them.
-// Falls back to opening the browser for queries with no instant answer.
+// Uses DuckDuckGo Instant Answer API — no key required.
+// Returns text results directly to the LLM so it can reason over them.
+// Falls back to opening the browser if no instant answer is available.
 @available(iOS 26, *)
 final class InternetSearchTool: Tool {
     typealias Output = String
 
     let name = "internetSearch"
-    let description = """
-        Searches the internet and returns a summary of results. Use this for current \
-        events, facts, prices, or anything the on-device model may not know.
-        """
+    let description = "Search the internet and return results. Use for current events, facts, or anything the on-device model may not know."
 
-    @Generable
-    struct Arguments {
-        @Guide(description: "The search query, e.g. 'best sushi in San Jose' or 'weather in Tokyo tomorrow'.")
-        var query: String
+    struct Arguments: Generable {
+        let query: String
+
+        static var generationSchema: GenerationSchema {
+            GenerationSchema(
+                type: Self.self,
+                description: "Arguments for an internet search.",
+                properties: [
+                    .init(name: "query", description: "The search query, e.g. 'best sushi in San Jose' or 'Tesla stock price'.", type: String.self)
+                ]
+            )
+        }
+
+        init(query: String) { self.query = query }
+
+        init(_ content: GeneratedContent) throws {
+            self.query = try content.value(forProperty: "query")
+        }
+
+        var generatedContent: GeneratedContent {
+            GeneratedContent(properties: ["query": query])
+        }
     }
 
     private struct DDGResponse: Decodable {
-        let Abstract: String
         let AbstractText: String
         let AbstractSource: String
         let RelatedTopics: [RelatedTopic]
-
-        struct RelatedTopic: Decodable {
-            let Text: String?
-        }
+        struct RelatedTopic: Decodable { let Text: String? }
     }
 
     func call(arguments: Arguments) async throws -> String {
@@ -41,36 +52,23 @@ final class InternetSearchTool: Tool {
 
         if let result = try? JSONDecoder().decode(DDGResponse.self, from: data) {
             var parts: [String] = []
-
             if !result.AbstractText.isEmpty {
-                let source = result.AbstractSource.isEmpty ? "" : " (via \(result.AbstractSource))"
-                parts.append(result.AbstractText + source)
+                let src = result.AbstractSource.isEmpty ? "" : " (via \(result.AbstractSource))"
+                parts.append(result.AbstractText + src)
             }
-
-            let topics = result.RelatedTopics
-                .compactMap(\.Text)
-                .filter { !$0.isEmpty }
-                .prefix(3)
-                .map { "• \($0)" }
-            parts.append(contentsOf: topics)
-
-            if !parts.isEmpty {
-                return (parts.joined(separator: "\n"))
-            }
+            result.RelatedTopics.compactMap(\.Text).filter { !$0.isEmpty }.prefix(3)
+                .forEach { parts.append("• \($0)") }
+            if !parts.isEmpty { return parts.joined(separator: "\n") }
         }
 
-        // No instant answer — open browser so the user can read results themselves
-        let safariURL  = URL(string: "https://www.google.com/search?q=\(encoded)")!
-        let chromeURL  = URL(string: "googlechrome://www.google.com/search?q=\(encoded)")!
-
+        // No instant answer — open browser
+        let safariURL = URL(string: "https://www.google.com/search?q=\(encoded)")!
+        let chromeURL = URL(string: "googlechrome://www.google.com/search?q=\(encoded)")!
         await MainActor.run {
-            if UIApplication.shared.canOpenURL(chromeURL) {
-                UIApplication.shared.open(chromeURL)
-            } else {
-                UIApplication.shared.open(safariURL)
-            }
+            UIApplication.shared.open(
+                UIApplication.shared.canOpenURL(chromeURL) ? chromeURL : safariURL
+            )
         }
-
-        return ("No instant answer found for '\(arguments.query)' — opened search results in your browser.")
+        return "No instant answer for '\(arguments.query)' — opened search results in your browser."
     }
 }

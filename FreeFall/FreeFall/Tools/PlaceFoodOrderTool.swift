@@ -1,34 +1,50 @@
 import FoundationModels
 import UIKit
 
-// DoorDash has no public consumer ordering API. This tool deep-links into the
-// DoorDash app (or web) so the user can review and confirm the order themselves.
-// The LLM decides which restaurant to open; the human confirms the cart.
+// DoorDash has no public consumer ordering API.
+// This tool deep-links into the app so the user reviews and confirms the cart.
 @available(iOS 26, *)
 final class PlaceFoodOrderTool: Tool {
     typealias Output = String
 
     let name = "placeFoodOrder"
-    let description = """
-        Opens DoorDash to place a food order from a specific restaurant. Use this when \
-        the user wants to order food for delivery. The user will confirm the order in the app.
-        """
+    let description = "Open DoorDash to order food from a restaurant. Use when the user wants delivery."
 
-    @Generable
-    struct Arguments {
-        @Guide(description: "Name of the restaurant to order from.")
-        var restaurantName: String
+    struct Arguments: Generable {
+        let restaurantName: String
+        let items: String
 
-        @Guide(description: "Comma-separated list of items the user wants to order.")
-        var items: String
+        static var generationSchema: GenerationSchema {
+            GenerationSchema(
+                type: Self.self,
+                description: "Arguments for opening a food order.",
+                properties: [
+                    .init(name: "restaurantName", description: "Name of the restaurant to order from.", type: String.self),
+                    .init(name: "items",          description: "Comma-separated items the user wants to order.", type: String.self)
+                ]
+            )
+        }
+
+        init(restaurantName: String, items: String) {
+            self.restaurantName = restaurantName
+            self.items          = items
+        }
+
+        init(_ content: GeneratedContent) throws {
+            self.restaurantName = try content.value(forProperty: "restaurantName")
+            self.items          = try content.value(forProperty: "items")
+        }
+
+        var generatedContent: GeneratedContent {
+            GeneratedContent(properties: ["restaurantName": restaurantName, "items": items])
+        }
     }
 
     func call(arguments: Arguments) async throws -> String {
-        let encoded = arguments.restaurantName
+        let encoded  = arguments.restaurantName
             .addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
-
-        let appURL  = URL(string: "doordash://search?q=\(encoded)")!
-        let webURL  = URL(string: "https://www.doordash.com/search/\(encoded)")!
+        let appURL   = URL(string: "doordash://search?q=\(encoded)")!
+        let webURL   = URL(string: "https://www.doordash.com/search/\(encoded)")!
 
         await MainActor.run {
             if UIApplication.shared.canOpenURL(appURL) {
@@ -38,10 +54,7 @@ final class PlaceFoodOrderTool: Tool {
             }
         }
 
-        let itemSummary = arguments.items.isEmpty ? "" : " (\(arguments.items))"
-        return (
-            "Opened DoorDash for \(arguments.restaurantName)\(itemSummary). " +
-            "Review your cart and tap Place Order to confirm."
-        )
+        let itemNote = arguments.items.isEmpty ? "" : " (\(arguments.items))"
+        return "Opened DoorDash for \(arguments.restaurantName)\(itemNote). Review and confirm your cart in the app."
     }
 }

@@ -34,11 +34,17 @@
 	<string>FreeFall adds events to your calendar.</string>
 	<key>NSCalendarsUsageDescription</key>
 	<string>FreeFall adds events to your calendar.</string>
+	<key>NSContactsUsageDescription</key>
+	<string>Free Fall accesses your contacts to send Apple Cash payments on your behalf.</string>
+	<key>NSFaceIDUsageDescription</key>
+	<string>Free Fall uses Face ID to authorize Apple Cash payments.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>FreeFall uses your location to find nearby restaurants, calculate travel times, and check weather.</string>
 	<key>NSRemindersFullAccessUsageDescription</key>
 	<string>FreeFall creates reminders for you.</string>
 	<key>NSRemindersUsageDescription</key>
 	<string>FreeFall creates reminders for you.</string>
+	<key>NSSiriUsageDescription</key>
+	<string>Free Fall uses Siri to initiate Apple Cash transfers.</string>
 </dict>
 </plist>
